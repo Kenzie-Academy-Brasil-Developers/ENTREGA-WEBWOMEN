@@ -60,12 +60,6 @@ const createCard = arr => {
 const renderSelectedVacancies = arr => {
     const selectedList = document.querySelector(".selected__list")
 
-    // const jsonList = JSON.parse(localStorage.getItem("data-jobs"))
-
-    // if (jsonList.length > 0) {
-    //     arr = [...jsonList]
-    // }
-
     selectedList.innerHTML = ""
 
     if (arr.length <= 0) {
