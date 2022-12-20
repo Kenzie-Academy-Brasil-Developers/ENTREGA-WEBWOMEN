@@ -28,4 +28,4 @@ const jobsData = [
   },
 ];
 
-const selected = []
+const selected = JSON.parse(localStorage.getItem("data-jobs")) || []

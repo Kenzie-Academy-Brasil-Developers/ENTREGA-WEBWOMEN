@@ -44,6 +44,11 @@ const createCard = arr => {
     button.innerText = "Candidatar"
     button.dataset.id = arr.id
 
+    selected.forEach(vaga => {
+        if (vaga.id === arr.id) {
+            button.innerText = "Remover candidatura"
+        }
+    })
 
     info.append(enterprise, location)
     func.append(modalities, button)
@@ -55,9 +60,15 @@ const createCard = arr => {
 const renderSelectedVacancies = arr => {
     const selectedList = document.querySelector(".selected__list")
 
+    // const jsonList = JSON.parse(localStorage.getItem("data-jobs"))
+
+    // if (jsonList.length > 0) {
+    //     arr = [...jsonList]
+    // }
+
     selectedList.innerHTML = ""
 
-    if (selected.length <= 0) {
+    if (arr.length <= 0) {
         const emptySelected = createEmptySelected()
 
         selectedList.append(emptySelected)
@@ -67,7 +78,7 @@ const renderSelectedVacancies = arr => {
 
             selectedList.appendChild(vacancies)
         })
-        removeSelected(arr)
+        removeSelected(selected)
     }
 }
 
@@ -98,7 +109,7 @@ const createSelectedVacancies = arr => {
     title.innerText = arr.title
 
     button.className = "selected__button--remove"
-    button.dataset.selectedId = arr.selectedId
+    button.dataset.selectedId = arr.id
 
     img.className = "selected__button--img"
     img.src = "/assets/img/trash.png"
@@ -127,35 +138,34 @@ const addToSelected = () => {
         element.addEventListener("click", event => {
             const vacancieFound = jobsData.find(element => element.id === Number(event.target.dataset.id))
 
-            if (selected.includes(vacancieFound)) {
-
+            if (selected.includes(vacancieFound) || element.innerText === "Remover candidatura") {
+                const filteredVacancies = selected.findIndex(element => element.id === Number(event.target.dataset.id))
+                selected.splice(filteredVacancies, 1)
+                element.innerText = "Candidatar"
             } else {
                 element.innerText = "Remover candidatura"
                 selected.push(vacancieFound)
             }
             localStorage.setItem("data-jobs", JSON.stringify(selected))
-            console.log(selected)
             renderSelectedVacancies(selected)
         })
     })
 }
 
-const removeSelected = arr => {
+const removeSelected = selected => {
     const removeButtons = document.querySelectorAll(".selected__button--remove")
-
     removeButtons.forEach(element => {
         element.addEventListener("click", (event) => {
-            const vacancieInSelected = arr.find(element => element.selectedId === Number(event.target.dataset.selectedId))
-
+            const vacancieInSelected = selected.findIndex(element => element.id === Number(event.target.dataset.selectedId))
             localStorage.removeItem("data-jobs")
 
-            const vacanciesIndex = arr.indexOf(vacancieInSelected)
+            const vacanciesIndex = selected.indexOf(vacancieInSelected)
 
-            arr.splice(vacanciesIndex, 1)
+            selected.splice(vacanciesIndex, 1)
 
-            localStorage.setItem("data-jobs", JSON.stringify(arr))
+            localStorage.setItem("data-jobs", JSON.stringify(selected))
 
-            renderSelectedVacancies(arr)
+            renderSelectedVacancies(selected)
         })
     })
 }
